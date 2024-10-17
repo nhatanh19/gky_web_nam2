@@ -1,0 +1,29 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    height: 100%;
+    font-family: sans-serif;
+}
+
+.btn {
+    margin-left: 10px;
+}
+
+.btn-add {
+    margin-left: 0;
+}
+
+.title-h1 {
+    width: 100%;
+    text-align: center;
+    padding: 50px 0;
+}
+
+.table {
+    margin: 10px auto;
+}

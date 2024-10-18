@@ -5,12 +5,12 @@ function crawlDataUser()
     global $pdo;
     try {
         // Khởi tạo câu truy vấn cơ bản
-        $sql = "SELECT `id`, `cccd`, `hovaten`, `namsinh`, `diachi`, `gioitinh` FROM `user`";
+        $sql = "SELECT `admin_id`, `admin_email`, `admin_password`, `images` FROM `users`";
 
         // Kiểm tra xem có tham số tìm kiếm không
         if (isset($_GET['search_query']) && !empty($_GET['search_query'])) {
             $search_query = '%' . $_GET['search_query'] . '%';
-            $sql .= " WHERE `hovaten` LIKE :search_query OR `id` LIKE :search_query";
+            $sql .= " WHERE `admin_email` LIKE :search_query OR `admin_id` LIKE :search_query";
         }
 
         // Chuẩn bị câu truy vấn

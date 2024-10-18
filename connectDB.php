@@ -1,6 +1,6 @@
 <?php
 $host = 'localhost'; // Thay đổi nếu cần thiết
-$db = 'qlythuvien-gky';
+$db = 'qly-nhansu';
 $user = 'root'; // Tên người dùng MySQL
 $pass = ''; // Mật khẩu MySQL
 try {

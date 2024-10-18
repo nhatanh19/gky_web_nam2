@@ -1,46 +1,40 @@
 <?php
-// Kết nối đến cơ sở dữ liệu
 require "../connectDB.php";
 
-try {
+// Kiểm tra nếu form đã được gửi
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Lấy dữ liệu từ form
-    $cccd = $_POST['cccd'];
-    $hovaten = $_POST['hovaten'];
-    $namsinh = $_POST['namsinh'];
-    $diachi = $_POST['diachi'];
-    $gioitinh = isset($_POST['gioitinh']) ? $_POST['gioitinh'] : 'Nam'; // Mặc định là Nam
+    $admin_email = $_POST['admin_email'];
+    $admin_password = $_POST['admin_password'];
 
-    // Hàm sinh ID mới
-    function generateID()
-    {
-        return 'VKU' . str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
-    }
+    // Xử lý upload ảnh
+    if (isset($_FILES['images']) && $_FILES['images']['error'] === 0) {
+        $image_name = $_FILES['images']['name'];
+        $image_tmp_name = $_FILES['images']['tmp_name'];
+        $image_ext = pathinfo($image_name, PATHINFO_EXTENSION);
+        $new_image_name = 'IMG-' . uniqid() . '.' . $image_ext;
+        $upload_dir = '../image/'; // Thư mục lưu ảnh
 
-    $id = generateID();
-    $inserted = false;
-
-    // Lặp cho đến khi insert thành công( id là khoá chính)
-    while (!$inserted) {
-        // Kiểm tra xem ID có trùng lặp không
-        $checkSql = "SELECT COUNT(*) FROM `user` WHERE `id` = ?";
-        $checkStmt = $pdo->prepare($checkSql);
-        $checkStmt->execute([$id]);
-        $count = $checkStmt->fetchColumn();
-
-        if ($count > 0) {
-            // Nếu trùng lặp, sinh ID mới
-            $id = generateID();
-        } else {
-            // Câu lệnh SQL để thêm thông tin người dùng
-            $sql = "INSERT INTO `user` (`id`, `cccd`, `hovaten`, `namsinh`, `diachi`, `gioitinh`) VALUES (?, ?, ?, ?, ?, ?)";
-            $stmt = $pdo->prepare($sql);
-            $inserted = $stmt->execute([$id, $cccd, $hovaten, $namsinh, $diachi, $gioitinh]);
+        // Tạo thư mục nếu chưa tồn tại
+        if (!is_dir($upload_dir)) {
+            mkdir($upload_dir, 0755, true);
         }
-    }
 
-    // Chuyển hướng về trang thông tin người dùng với thông báo
-    header("Location: ../index.php?id=" . $id . "&message=Thêm thông tin thành công");
-    exit();
-} catch (PDOException $e) {
-    echo 'Lỗi kết nối: ' . $e->getMessage();
+        // Di chuyển file ảnh vào thư mục
+        $upload_path = $upload_dir . $new_image_name;
+        if (move_uploaded_file($image_tmp_name, $upload_path)) {
+            // Tải lên thành công, lưu thông tin vào CSDL
+            $stmt = $pdo->prepare("INSERT INTO `users` (`admin_email`, `admin_password`, `images`) VALUES (?, ?, ?)");
+            $new_image_name = "image/" . $new_image_name;
+            $stmt->execute([$admin_email, $admin_password, $new_image_name]);
+
+            // Chuyển hướng về trang chủ hoặc thông báo thành công
+            header("Location: ../index.php");
+            exit();
+        } else {
+            echo "Không thể tải lên ảnh.";
+        }
+    } else {
+        echo "Có lỗi khi tải lên ảnh.";
+    }
 }

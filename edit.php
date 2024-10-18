@@ -18,56 +18,74 @@
     // Lấy ID từ tham số URL (ví dụ: index.php?id=1)
     $id = isset($_GET['id']) ? $_GET['id'] : 0;
     // Câu lệnh SQL
-    $sql = "SELECT `id`, `cccd`, `hovaten`, `namsinh`, `diachi`, `gioitinh` FROM `user` WHERE id = :id";
+    $sql = "SELECT `admin_id`, `admin_email`, `admin_password`, `images` FROM `users` WHERE `admin_id` = :id";
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(':id', $id);
     $stmt->execute();
     ?>
     <div class="center-block">
-        <h1 class="my-4 text-center">Chỉnh sửa thông tin người dùng</h1>
+        <h1 class="my-4 text-center">Chỉnh sửa thông tin tài khoản</h1>
         <?php
         // Kiểm tra kết quả
         if ($stmt->rowCount() > 0) {
             // Hiển thị dữ liệu
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
         ?>
-            <form method="POST" action="controller/update_user.php">
-                <input type="hidden" name="id" value="<?php echo htmlspecialchars($row['id']); ?>">
+            <form method="POST" action="controller/update_user.php" enctype="multipart/form-data">
+                <!-- Hiển thị ID -->
                 <div class="mb-3">
-                    <label for="cccd" class="form-label">CCCD</label>
-                    <input type="text" class="form-control" id="cccd" name="cccd" value="<?php echo htmlspecialchars($row['cccd']); ?>" required>
+                    <label for="admin_id" class="form-label">ID tài khoản</label>
+                    <input type="text" class="form-control" id="admin_id" name="admin_id" value="<?php echo htmlspecialchars($row['admin_id']); ?>" readonly>
                 </div>
+
                 <div class="mb-3">
-                    <label for="hovaten" class="form-label">Họ và tên</label>
-                    <input type="text" class="form-control" id="hovaten" name="hovaten" value="<?php echo htmlspecialchars($row['hovaten']); ?>" required>
+                    <label for="admin_email" class="form-label">Email tài khoản</label>
+                    <input type="email" class="form-control" id="admin_email" name="admin_email" value="<?php echo htmlspecialchars($row['admin_email']); ?>" required>
                 </div>
+
+                <!-- Hiển thị mật khẩu và thêm tính năng xem mật khẩu -->
                 <div class="mb-3">
-                    <label for="namsinh" class="form-label">Năm sinh</label>
-                    <input type="number" class="form-control" id="namsinh" name="namsinh" value="<?php echo htmlspecialchars($row['namsinh']); ?>" required>
+                    <label for="admin_password" class="form-label">Mật khẩu</label>
+                    <div class="input-group">
+                        <input type="password" class="form-control" id="admin_password" name="admin_password" value="<?php echo htmlspecialchars($row['admin_password']); ?>" required>
+                        <button type="button" class="btn btn-outline-secondary" onclick="togglePassword()">Hiển thị</button>
+                    </div>
                 </div>
+
+                <div class="mb-3 avatar" style="flex-direction: column; display: flex;">
+                    <label for="images" class="form-label">Ảnh hiện tại</label>
+                    <img style="width: 200px;" src="<?php echo htmlspecialchars($row['images']); ?>" alt="">
+                </div>
+                <!-- Nút tải lên ảnh -->
                 <div class="mb-3">
-                    <label for="diachi" class="form-label">Địa chỉ</label>
-                    <input type="text" class="form-control" id="diachi" name="diachi" value="<?php echo htmlspecialchars($row['diachi']); ?>" required>
+                    <label for="upload_image" class="form-label">Tải lên ảnh mới</label>
+                    <input type="file" class="form-control" id="upload_image" name="upload_image" accept="image/*">
                 </div>
-                <div class="mb-3">
-                    <label for="gioitinh" class="form-label">Giới tính</label>
-                    <select class="form-select" id="gioitinh" name="gioitinh" required>
-                        <option value="Nam" <?php if ($row['gioitinh'] == 'Nam') echo 'selected'; ?>>Nam</option>
-                        <option value="Nữ" <?php if ($row['gioitinh'] == 'Nữ') echo 'selected'; ?>>Nữ</option>
-                    </select>
-                </div>
+
                 <button type="submit" class="btn btn-success">Thay đổi thông tin</button>
             </form>
         <?php
         } else {
             echo '<div class="alert alert-warning text-center" role="alert">';
-            echo 'Không tìm thấy người dùng với ID này.';
+            echo 'Không tìm thấy quản trị viên với ID này.';
             echo '</div>';
         }
         ?>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+    <script>
+        // Hàm để hiển thị mật khẩu
+        function togglePassword() {
+            var passwordField = document.getElementById("admin_password");
+            if (passwordField.type === "password") {
+                passwordField.type = "text";
+            } else {
+                passwordField.type = "password";
+            }
+        }
+    </script>
 </body>
 
 </html>

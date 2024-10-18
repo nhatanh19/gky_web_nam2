@@ -14,29 +14,21 @@
     <a href="index.php" class="btn btn-primary return-home">Trở về trang chủ</a>
     <div class="center-block">
         <h1 class="my-4 text-center">Thêm người dùng</h1>
-        <form action="controller/insert_user.php" method="post">
+        <!-- Cập nhật enctype để hỗ trợ tải file -->
+        <form action="controller/insert_user.php" method="post" enctype="multipart/form-data">
             <div class="mb-3">
-                <label for="hovaten" class="form-label">Họ và Tên</label>
-                <input type="text" class="form-control" id="hovaten" name="hovaten" required>
+                <label for="admin_email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="admin_email" name="admin_email" required>
             </div>
             <div class="mb-3">
-                <label for="cccd" class="form-label">CCCD</label>
-                <input type="text" class="form-control" id="cccd" name="cccd" required>
+                <label for="admin_password" class="form-label">Mật khẩu</label>
+                <input type="password" class="form-control" id="admin_password" name="admin_password" required>
             </div>
             <div class="mb-3">
-                <label for="namsinh" class="form-label">Năm Sinh</label>
-                <input type="number" class="form-control" id="namsinh" name="namsinh" required>
+                <label for="images" class="form-label">Tải lên ảnh</label>
+                <input type="file" class="form-control" id="images" name="images" required>
             </div>
-            <div class="mb-3">
-                <label for="diachi" class="form-label">Địa Chỉ</label>
-                <input type="text" class="form-control" id="diachi" name="diachi" required>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Giới Tính</label><br>
-                <input type="radio" id="gioitinh" name="gioitinh" value="Nam"> Nam
-                <input type="radio" id="gioitinh" name="gioitinh" value="Nữ"> Nữ
-            </div>
-            <button type="submit" class="btn btn-primary">Thêm Thông Tin</button>
+            <button type="submit" class="btn btn-primary">Thêm người dùng</button>
         </form>
     </div>
 
